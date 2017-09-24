@@ -1,1 +1,1 @@
-# wsong2
+# build.xml templates
