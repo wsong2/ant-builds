@@ -1,8 +1,8 @@
-<project name="assessment" basedir="." default="jar">
+<project name="template" basedir="." default="jar">
     
 	<property name="build.dir" value="build" />
 	<property name="jar.dir"   value="."/>
-	<property name="main-class"  value="wsong2.assessment.Main"/>
+	<property name="main-class"  value="wsong2.template.Main"/>
 
     <path id="project.classpath">
 		<pathelement path="${build.dir}/"/>
@@ -15,7 +15,7 @@
 				classpathref="project.classpath"
 				includeantruntime="false"
 				encoding="UTF-8">
-		  <exclude name="**/wsong2/assessment/test/Tests.java" />
+		  <exclude name="**/test/Tests.java" />
 		</javac>
     </target>
 
@@ -27,5 +27,11 @@
             </manifest>
         </jar>
 	</target>
-		
+
+	<target name="clean">
+	    <delete includeemptydirs="true" quiet="true">
+			<fileset dir="${build.dir}" includes="**/*"/>
+		</delete>
+	</target>
+	
 </project>
