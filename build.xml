@@ -3,18 +3,18 @@
 	<property name="build.dir" value="build" />
 	<property name="main-class" value="wsong2.template.Main"/>
 
-    <path id="project.classpath">
+	<path id="project.classpath">
 		<pathelement path="${build.dir}/"/>
-    </path>
+	</path>
 
     <target name="compile">
         <mkdir dir="${build.dir}"/>
-        <javac 	srcdir="src"
+		<javac 	srcdir="src"
 				destdir="${build.dir}"
 				classpathref="project.classpath"
 				includeantruntime="false"
 				encoding="UTF-8">
-		  <exclude name="**/test/Tests.java" />
+			<exclude name="**/test/Tests.java" />
 		</javac>
     </target>
 

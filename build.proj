@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputPath>bin\</OutputPath>
+	<!--
+	<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	-->
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion> 
+	<Platform>x86</Platform>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile3Des Include="src\3DES.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CompileAes Include="src\SimAes.cs" />
+  </ItemGroup>
+
+  <Target Name="Build">
+	<MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+    <Csc Sources="@(Compile3Des)" OutputAssembly="$(OutputPath)3DES.exe" />  
+    <Csc Sources="@(CompileAes)" OutputAssembly="$(OutputPath)SimAes.exe" />  
+  </Target>
+
+ </Project>
