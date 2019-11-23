@@ -1,0 +1,11 @@
+<ivy-module version="2.0">
+    <info organisation="swx.sehome" module="" />
+    <configurations>
+        <conf name="binaries"/>
+    </configurations>
+    <dependencies>
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.bundles/jaxrs-ri -->
+		<dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.29.1" conf="binaries->default"/>
+    </dependencies>
+
+</ivy-module>

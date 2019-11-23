@@ -1,4 +1,4 @@
-<project name="template" basedir="." default="jar">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="template" basedir="." default="jar">
     
 	<property name="build.dir" value="build" />
 	<property name="main-class" value="wsong2.template.Main"/>
@@ -31,5 +31,5 @@
 			<fileset dir="${build.dir}" includes="**/*"/>
 		</delete>
 	</target>
-	
+
 </project>
