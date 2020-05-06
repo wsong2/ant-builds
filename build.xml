@@ -1,14 +1,20 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="template" basedir="." default="jar">
+<project name="jerseyApp" basedir="." default="jar">
     
-	<property name="build.dir" value="build" />
-	<property name="main-class" value="wsong2.template.Main"/>
+	<property name="build.dir" value="bin" />
+	<property name="main-class" value="org.eclipse.jetty.embedded.JerseyApplication"/>
+	<property name="target.jar" location="dist/${ant.project.name}.jar"/>
 
 	<path id="project.classpath">
-		<pathelement path="${build.dir}/"/>
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
 	</path>
 
+	<manifestclasspath property="lib.list" jarfile="${target.jar}">
+		<classpath refid="project.classpath" />
+	</manifestclasspath>
+
     <target name="compile">
-        <mkdir dir="${build.dir}"/>
 		<javac 	srcdir="src"
 				destdir="${build.dir}"
 				classpathref="project.classpath"
@@ -19,14 +25,16 @@
     </target>
 
 	<target name="jar" depends="compile" >
-        <jar destfile="./${ant.project.name}.jar" basedir="${build.dir}">
+        <jar destfile="${target.jar}" basedir="${build.dir}">
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="Class-Path" value="${lib.list}"/>
             </manifest>
         </jar>
 	</target>
 
 	<target name="clean">
+		<delete file="${target.jar}"/>
 	    <delete includeemptydirs="true" quiet="true">
 			<fileset dir="${build.dir}" includes="**/*"/>
 		</delete>

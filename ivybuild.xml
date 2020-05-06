@@ -1,0 +1,59 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="jerseyApp" basedir="." default="build">
+    <property name="ivy.home" value="c:/apache-ivy-2.5.0" />
+    <property name="ivy.jar.dir" value="${ivy.home}"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+    
+	<property name="src.dir"  location="src"/>
+	<property name="dist.dir" location="dist"/>
+	<property name="dist.jar" location="${dist.dir}/${ant.project.name}.jar"/>
+	<property name="build.dir"  value="bin" />
+	<property name="main-class" value="org.eclipse.jetty.embedded.JerseyApplication"/>
+	
+	<path id="project.classpath">
+		<fileset dir="${dist.dir}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<manifestclasspath property="jar.classpath" jarfile="${dist.jar}">
+		<classpath refid="project.classpath" />
+	</manifestclasspath>
+
+    <target name="init-ivy">
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar" />
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+    </target>
+
+	<target name="get-dependencies" depends="init-ivy">
+	    <ivy:retrieve pattern="${dist.dir}/lib/[artifact](-[classifier])(-[revision]).[ext]"/>
+		<ivy:resolve/>
+	</target>
+
+    <target name="compile" depends="get-dependencies" >
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="project.classpath" includeantruntime="false" encoding="UTF-8">
+			<exclude name="**/test/Tests.java" />
+		</javac>
+    </target>
+
+	<target name="build" depends="compile" >
+
+        <jar destfile="${dist.jar}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="Class-Path" value="${jar.classpath}"/>
+            </manifest>
+        </jar>
+	</target>
+
+	<target name="clean">
+		<delete file="${dist.jar}"/>
+	    <delete includeemptydirs="true" quiet="true">
+			<fileset dir="${build.dir}" includes="**/*"/>
+		</delete>
+	</target>
+
+</project>

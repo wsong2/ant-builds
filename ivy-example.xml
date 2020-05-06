@@ -1,0 +1,95 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="test">
+    <!-- input directories and files -->
+    <property name="app.src.dir" value="sources" />
+    <property name="tests.src.dir" value="tests" />
+    <property name="lib.dir" value="lib" />
+
+    <!-- output directories and files -->
+    <property name="build.dir" value="build" />
+    <property name="app.classes.dir" value="${build.dir}/application/classes" />
+    <property name="app.jar.dir" value="${build.dir}/application/jar" />
+    <property name="app.jar.name" value="Trx.jar" />
+    <property name="app.jar.pathname" value="${app.jar.dir}/${app.jar.name}" />
+    <property name="app.jar.main-class" value="org.emptyhammock.trx.TrxEdit" />
+    <property name="tests.classes.dir" value="${build.dir}/tests/classes" />
+    <property name="install.dir" value="${user.home}/bin" />
+
+    <!-- Ivy-related settings -->
+    <property name="ivy.install.version" value="2.4.0" />
+    <condition property="ivy.home" value="${env.IVY_HOME}">
+		<isset property="env.IVY_HOME" />
+    </condition>
+    <property name="ivy.home" value="${user.home}/.ant" />
+    <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+    <presetdef name="project.javac">
+        <javac debug="on" includeantruntime="false" />
+    </presetdef>
+
+    <target name="build" depends="get-dependencies">
+        <mkdir dir="${app.classes.dir}" />
+        <mkdir dir="${app.jar.dir}" />
+        <mkdir dir="${tests.classes.dir}" />
+
+        <project.javac srcdir="${app.src.dir}" destdir="${app.classes.dir}" />
+        <jar destfile="${app.jar.pathname}" basedir="${app.classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${app.jar.main-class}" />
+            </manifest>
+        </jar>
+
+        <project.javac srcdir="${tests.src.dir}" destdir="${tests.classes.dir}">
+            <classpath>
+                <fileset dir="${lib.dir}" includes="**/*.jar" />
+                <path location="${app.jar.pathname}" />
+            </classpath>
+        </project.javac>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}" />
+        <delete dir="${lib.dir}" />
+    </target>
+
+    <target name="clean-all" depends="clean" description="clean ivy cache">
+        <ivy:cleancache />
+    </target>
+
+    <target name="test" depends="build">
+        <junit printsummary="on" haltonfailure="yes" fork="true">
+            <classpath>
+                <fileset dir="${lib.dir}" includes="**/*.jar" />
+                <path location="${app.jar.pathname}"/>
+                <pathelement location="${tests.classes.dir}" />
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest>
+                <fileset dir="${tests.src.dir}" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="install" depends="build">
+        <copy file="${app.jar.pathname}" todir="${install.dir}" />
+    </target>
+
+    <target name="get-dependencies" depends="init-ivy">
+        <ivy:retrieve conf="binaries" pattern="lib/[conf]/[artifact](-[classifier]).[ext]" />
+    </target>
+
+    <target name="init-ivy" depends="download-ivy">
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar" />
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+    </target>
+
+    <target name="download-ivy" unless="offline">
+        <mkdir dir="${ivy.jar.dir}" />
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true" />
+    </target>
+
+</project>
