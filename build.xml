@@ -2,7 +2,7 @@
     
 	<property name="build.dir" value="bin" />
 	<property name="main-class" value="org.eclipse.jetty.embedded.JerseyApplication"/>
-	<property name="target.jar" location="dist/${ant.project.name}.jar"/>
+	<property name="target.jar" location="${ant.project.name}.jar"/>
 
 	<path id="project.classpath">
 		<fileset dir="lib">
